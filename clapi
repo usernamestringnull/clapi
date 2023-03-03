@@ -29,7 +29,7 @@ ARUNI=$'\e[33m\xe2\x9e\xa4\e[0m'
 ############
 
 echo -en "\e[33mCheck API connection...\e[0m"
-CHECKAPI=$(curl -o /dev/null -sI -X GET https://api.clouding.io/v1/servers -m 0.2 -w '%{http_code}\n')
+CHECKAPI=$(curl -o /dev/null -sI -X GET https://api.clouding.io/v1/servers -m 1 -w '%{http_code}\n')
 if [ "401" != $CHECKAPI ]; then
 	echo -e "$KOUNI\e[31m No API response, check network connection or name resolution.\e[0m"
 	exit 1
