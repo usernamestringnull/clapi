@@ -80,5 +80,5 @@ apt install pip jq csvkit -y && pip install jtbl
 ```  
 Install clapi:
 ```sh 
-cd /bin && git clone [URL] && chmod 755 clapi
+cd /bin && git clone https://github.com/usernamestringnull/clapi/releases/download/v1.0.1/clapi && chmod 755 clapi
 ```  
