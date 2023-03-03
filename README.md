@@ -76,9 +76,9 @@ Request completed (in 2 seconds).
 ## Installation
 Install dependencies:
 ```sh 
-apt install pip jq csvkit -y && pip install jtbl
+apt install pip jq csvkit shc -y && pip install jtbl
 ```  
 Install clapi:
 ```sh 
-
+curl -o clapi https://raw.githubusercontent.com/usernamestringnull/clapi/main/clapi && shc -f clapi -o /usr/bin/clapi
 ```  
