@@ -13,9 +13,8 @@ Run: ```clapi -h```
 
 ⚡ Clapi v1.0.1 for api.clouding.io ⚡
 
-Check Clapi version... OK  ✓
 Check API connection... OK  ✓
-Check dependencies and KEY... OK  ✓
+Check version, dependencies and KEY... OK  ✓
 
 Usage: clapi [OPTIONS] <INPUT or null>
 
@@ -62,8 +61,7 @@ Run: ```clapi -ls```
 ⚡ Clapi v1.0.1 for api.clouding.io ⚡
 
 Check Clapi version... OK  ✓
-Check API connection... OK  ✓
-Check dependencies and KEY... OK  ✓
+Check version, dependencies and KEY... OK  ✓
 
 | ID               | Name        | Status   | vCore | RAM | Disk | IP             |
 | ---------------- | ----------- | -------- | ----- | --- | ---- | -------------- |
