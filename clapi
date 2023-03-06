@@ -37,7 +37,7 @@ if [ "401" != $CHECKAPI ]; then
 	exit 1
 fi
 echo -e "\e[32m OK \e[0m $OKUNI"
-echo -en "\e[33mCheck dependencies and KEY...\e[0m"
+echo -en "\e[33mCheck version, dependencies and KEY...\e[0m"
 JQ_OK=$(dpkg-query -W jq |grep -v "no packages found")
 CSV_OK=$(dpkg-query -W csvkit |grep -v "no packages found")
 JTBL_OK=$(pip list | grep jtbl)
