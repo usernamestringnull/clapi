@@ -61,6 +61,7 @@ Run: ```clapi -ls```
 ```sh
 ⚡ Clapi v1.0.1 for api.clouding.io ⚡
 
+Check Clapi version... OK  ✓
 Check API connection... OK  ✓
 Check dependencies and KEY... OK  ✓
 
