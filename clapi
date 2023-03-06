@@ -5,12 +5,14 @@
 ## Requires jq, jtbl and csvkit (Based Debian).
 ## It is a personal development and independent from Clouding.io, in case of problems with the API contact with their support. 
 
+VERSION="v1.0.1"
+
 ###########
 ## TITLE ##
 ###########
 
 echo -e ""
-echo -e "\e[1;33m\xE2\x9A\xA1\033[0m \033[0;36mClapi \033[1;34mv1.0.1\033[0;36m for api.clouding.io\033[0m \e[1;33m\xE2\x9A\xA1\033[0m"
+echo -e "\e[1;33m\xE2\x9A\xA1\033[0m \033[0;36mClapi \033[1;34m$VERSION\033[0;36m for api.clouding.io\033[0m \e[1;33m\xE2\x9A\xA1\033[0m"
 echo -e ""
 
 ############
@@ -28,6 +30,16 @@ ARUNI=$'\e[33m\xe2\x9e\xa4\e[0m'
 ## CHECKS ##
 ############
 
+echo -en "\e[33mCheck Clapi version...\e[0m"
+url="https://api.github.com/repos/usernamestringnull/clapi/tags"
+tags=$(curl -s $url | jq -r '.[].name')
+latest_tag=$(echo $tags | tr ' ' '\n' | sort -r | head -n1)
+if [ "$VERSION" != $latest_tag ]; then
+	echo -e "$KOUNI"
+	echo -e "\e[31mClapi version obsolete, update it... (last version $latest_tag)\e[0m"
+	exit 1
+fi
+echo -e "\e[32m OK \e[0m $OKUNI"
 echo -en "\e[33mCheck API connection...\e[0m"
 CHECKAPI=$(curl -o /dev/null -sI -X GET https://api.clouding.io/v1/servers -m 1 -w '%{http_code}\n')
 if [ "401" != $CHECKAPI ]; then
