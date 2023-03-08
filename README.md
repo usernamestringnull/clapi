@@ -71,7 +71,7 @@ Check version, dependencies and KEY... OK  ✓
 | BojVWnryDRkK0wav | nginx       | Archived |   2.0 |   4 |   10 | 217.34.231.80  |
 | Z7XyD2BorZed4oER | proxmox     | Archived |  10.0 |  20 |  100 | 161.21.34.34   |
 
-Request completed (in 2 seconds).
+Request completed (in 1.296 seconds).
 ```
 ## Installation
 Install dependencies:
