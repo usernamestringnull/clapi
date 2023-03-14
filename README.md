@@ -73,7 +73,7 @@ Check version, dependencies and KEY... OK  ✓
 
 Request completed (in 1.296 seconds).
 ```
-## Installation
+# Installation
 Install dependencies:
 ```sh 
 apt install pip jq csvkit shc -y && pip install jtbl
