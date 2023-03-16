@@ -76,7 +76,7 @@ Request completed (in 1.296 seconds).
 # Installation
 Install dependencies:
 ```sh 
-apt install pip jq csvkit shc -y && pip install jtbl
+apt install build-essential && apt install pip jq csvkit shc -y && pip install jtbl
 ```  
 Install clapi:
 ```sh 
