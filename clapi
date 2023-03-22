@@ -636,7 +636,7 @@ server_resize () {
 		echo -e "\e[33mServer ID \e[34m$INPUT\e[33m to resize...\e[0m"
 		echo ""
 		datestart
-		# curl -sX POST "https://api.clouding.io/v1/servers/$INPUT/resize" -H "Accept: application/json" -H "X-API-KEY: $API_KEY" -H "Content-Type: application/json" -d '{"flavorId":"'$FLAVOR'","volumeSizeGb":"'$VOLUME'"}' | jtbl -m
+		curl -sX POST "https://api.clouding.io/v1/servers/$INPUT/resize" -H "Accept: application/json" -H "X-API-KEY: $API_KEY" -H "Content-Type: application/json" -d '{"flavorId":"'$FLAVOR'","volumeSizeGb":"'$VOLUME'"}' | jtbl -m
 	fi
 }
 server_novnc () {
