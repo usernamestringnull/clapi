@@ -297,7 +297,7 @@ server_list() {
 	if [ -z "$INPUT" ]; then
 		curl -sX GET "https://api.clouding.io/v1/servers?pageSize=200" -H "Accept: application/json" -H "X-API-KEY: $API_KEY" -H "Content-Type: application/json" -H "Content-Length: 0" | jq '.servers |= sort_by(.name)' | jq -r '["ID","Name","Status","vCore","RAM","Disk","IP"],(.servers[] |[.id,.name,.status,.vCores,.ramGb,.volumeSizeGb,.publicIp]) | @tsv' | csvlook
 	else
-		curl -sX GET "https://api.clouding.io/v1/servers/$INPUT" -H "Accept: application/json" -H "X-API-KEY: $API_KEY" -H "Content-Type: application/json" -H "Content-Length: 0" | jq -r '["ID","Name","Status","State","Flavor","Disk","Public","Private","Date created"],([.id,.name,.status,.powerState,.flavor,.volumeSizeGb,.publicIp,.privateIp,.createdAt]) | @tsv' | csvlook
+		curl -sX GET "https://api.clouding.io/v1/servers/$INPUT" -H "Accept: application/json" -H "X-API-KEY: $API_KEY" -H "Content-Type: application/json" -H "Content-Length: 0" | jq -r '["ID","Name","Status","State","Flavor","Disk","Public","Private","Date created"],([.id,.name,.status,.powerState,.flavor,.volumeSizeGb,.publicIp,.privateIp,.createdAt]) | @tsv' | csvlook --no-inference
 	fi	
 }
 server_create() {
