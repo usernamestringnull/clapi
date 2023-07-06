@@ -203,7 +203,8 @@ Options:
  -dfwr      \e[1;30m--delete-fw-rule\e[0m    Delete specified firewall rule (accept \e[1;36mINPUT\e[0m).
  -dfwg      \e[1;30m--delete-fw-group\e[0m   Delete specified firewall group (accept \e[1;36mINPUT\e[0m).
  -er        \e[1;30m--enable-rule\e[0m       Enabled specified firewall rule (accept \e[1;36mINPUT\e[0m).
- -dr        \e[1;30m--disable-rule\e[0m      Disabled specified firewall rule (accept \e[1;36mINPUT\e[0m)."
+ -dr        \e[1;30m--disable-rule\e[0m      Disabled specified firewall rule (accept \e[1;36mINPUT\e[0m).
+ -limits    \e[1;30m--get-all_limits\e[0m    Show all limits account."
 }
 
 #########
@@ -249,7 +250,7 @@ show_key() {
 
 history_actions () {
 	if [ -z "$INPUT" ]; then
-		curl -sX GET -H "Content-Type: application/json" -H "X-API-KEY: $API_KEY" https://api.clouding.io/v1/actions?pageSize=10 | jq -r '["ID","Status","Type","Start","Finish","Resource ID","Resource Type"],(.actions[] |[.id,.status,.type,.startedAt,.completedAt,.resourceId,.resourceType]) | @tsv' | csvlook
+		curl -sX GET -H "Content-Type: application/json" -H "X-API-KEY: $API_KEY" https://api.clouding.io/v1/actions?pageSize=50 | jq -r '["ID","Status","Type","Start","Finish","Resource ID","Resource Type"],(.actions[] |[.id,.status,.type,.startedAt,.completedAt,.resourceId,.resourceType]) | @tsv' | csvlook
 	else
 		CHECKID=$(curl -sX GET -H "Content-Type: application/json" -H "X-API-KEY: $API_KEY" "https://api.clouding.io/v1/actions/$INPUT")
 		if [[ $(echo $CHECKID | jq -r .status) == "404" ]]; then
@@ -912,6 +913,14 @@ backups_disabled() {
 }
 
 ############
+## LIMITS ##
+############
+
+get_all_limits() {
+	curl -sX GET "https://api.clouding.io/v1/account/limits?pageSize=200" -H "Accept: application/json" -H "X-API-KEY: $API_KEY" -H "Content-Type: application/json" -H "Content-Length: 0" | jq -r '["Name","Limit","Usage","Description"],(.values[] |[.name,.limit,.usage,.description]) | @tsv' | csvlook
+}
+
+############
 ## IMAGES ##
 ############
 
@@ -1379,6 +1388,7 @@ case $1 in
 								"--password"|"-pass") server_password; finish ;;
 								"--reset-password"|"-reset-pass"|"-rpass") server_reset_password; finish ;;
 								"--list-ssh"|"-ssh") list_ssh_keys; finish ;;
+								"--get-all_limits"|"-limits")  datestart; get_all_limits; finish;;
 							    *) 
 								   echo -e "$KOUNI \e[0;31mInvalid option, show help.\e[0m" 
 								   echo -e "Run: \033[0;36mclapi --help\e[0m"
