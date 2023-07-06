@@ -5,7 +5,7 @@
 ## Requires jq, jtbl and csvkit (Based Debian).
 ## It is a personal development and independent from Clouding.io, in case of problems with the API contact with their support. 
 
-VERSION="v1.0.8"
+VERSION="v1.0.9"
 
 ###########
 ## TITLE ##
