@@ -5,7 +5,7 @@
 ## Requires jq, jtbl and csvkit (Based Debian).
 ## It is a personal development and independent from Clouding.io, in case of problems with the API contact with their support. 
 
-VERSION="v1.0.9"
+VERSION="v1.1.0"
 
 ###########
 ## TITLE ##
@@ -184,6 +184,8 @@ Options:
  -archive   \e[1;30m--archive-server\e[0m    Archive server (accept \e[1;36mINPUT\e[0m).
  -unarchive \e[1;30m--unarchive-server\e[0m  Unarchive server (accept \e[1;36mINPUT\e[0m).
  -resize    \e[1;30m--resize-server\e[0m     Resize server (accept \e[1;36mINPUT\e[0m).
+ -elan      \e[1;30m--enable-lan\e[0m        Enable LAN (accept \e[1;36mINPUT\e[0m).
+ -dlan      \e[1;30m--disable-lan\e[0m       Disable LAN (accept \e[1;36mINPUT\e[0m).
  -vnc       \e[1;30m--novnc-url\e[0m         URL noVNC (accept \e[1;36mINPUT\e[0m).
  -pass      \e[1;30m--password\e[0m          Show password server (accept \e[1;36mINPUT\e[0m).
  -alla      \e[1;30m--all-archive\e[0m       Archive all servers (accept \e[1;36mINPUT\e[0m).
@@ -204,7 +206,9 @@ Options:
  -dfwg      \e[1;30m--delete-fw-group\e[0m   Delete specified firewall group (accept \e[1;36mINPUT\e[0m).
  -er        \e[1;30m--enable-rule\e[0m       Enabled specified firewall rule (accept \e[1;36mINPUT\e[0m).
  -dr        \e[1;30m--disable-rule\e[0m      Disabled specified firewall rule (accept \e[1;36mINPUT\e[0m).
- -limits    \e[1;30m--get-all_limits\e[0m    Show all limits account."
+ -esnmp     \e[1;30m--enable-snmp\e[0m       Enable SNMP out (accept \e[1;36mINPUT\e[0m).
+ -dsnmp     \e[1;30m--disable-snmp\e[0m      Disable SNMP out (accept \e[1;36mINPUT\e[0m).
+ -limits    \e[1;30m--get-all-limits\e[0m    Show all limits account."
 }
 
 #########
@@ -814,6 +818,63 @@ if [ -z "$INPUT" ]; then
 		curl -sX GET -H "Content-Type: application/json" -H "X-API-KEY: $API_KEY" -H "Content-Length: 0" https://api.clouding.io/v1/servers/$INPUT/password | jtbl -m
 	fi
 }
+lan_enabled() {
+    if [ -z "$INPUT" ]; then
+	    echo -n "$ARUNI Enter server ID to enable LAN: "
+	    read SID
+		CHECKID=$(curl -sX GET "https://api.clouding.io/v1/servers/$SID" -H "Accept: application/json" -H "X-API-KEY: $API_KEY" -H "Content-Type: application/json" -H "Content-Length: 0" | jq .status)
+		if [[ "$CHECKID" == "404" ]]; then
+			echo -e "$KOUNI \e[31mID not found. Check server ID and try again.\e[0m"
+			echo ""
+			exit 1
+		fi
+		echo ""
+		echo -e "\e[33mEnabling LAN for server ID \e[34m$SID\e[33m...\e[0m"
+		echo ""
+		datestart
+	    curl -sX POST "https://api.clouding.io/v1/servers/$SID/enable-private-network" -H "Accept: application/json" -H "X-API-KEY: $API_KEY" -H "Content-Type: application/json" -d '{"slots":"'$SLOTS'","frequency":"'$FREC'"}' | jtbl -m
+	  else
+	    CHECKID=$(curl -sX GET "https://api.clouding.io/v1/servers/$INPUT" -H "Accept: application/json" -H "X-API-KEY: $API_KEY" -H "Content-Type: application/json" -H "Content-Length: 0" | jq .status)
+		if [[ "$CHECKID" == "404" ]]; then
+			echo -e "$KOUNI \e[31mID not found. Check server ID and try again.\e[0m"
+			echo ""
+			exit 1
+		fi
+		echo ""
+		echo -e "\e[33mEnabling LAN for server ID \e[34m$INPUT\e[33m...\e[0m"
+		echo ""
+		datestart
+	    curl -sX POST "https://api.clouding.io/v1/servers/$INPUT/enable-private-network" -H "Accept: application/json" -H "X-API-KEY: $API_KEY" -H "Content-Type: application/json" -d '{"slots":"'$SLOTS'","frequency":"'$FREC'"}' | jtbl -m
+    fi
+}
+lan_disabled() {
+    if [ -z "$INPUT" ]; then
+	    echo -n "$ARUNI Enter server ID to disable LAN: "
+	    read SID
+		CHECKID=$(curl -sX GET "https://api.clouding.io/v1/servers/$SID" -H "Accept: application/json" -H "X-API-KEY: $API_KEY" -H "Content-Type: application/json" -H "Content-Length: 0" | jq .status)
+		if [[ "$CHECKID" == "404" ]]; then
+			echo -e "$KOUNI \e[31mID not found. Check server ID and try again.\e[0m"
+			echo ""
+			exit 1
+		fi
+		echo ""
+	    echo -e "\e[33mDisable LAN for server ID \e[34m$SID\e[33m...\e[0m"
+		echo ""
+		datestart
+        curl -sX POST "https://api.clouding.io/v1/servers/$SID/disable-private-network" -H "Accept: application/json" -H "Content-Length: 0" -H "X-API-KEY: $API_KEY" -H "Content-Type: application/json" | jtbl -m
+	else
+		CHECKID=$(curl -sX GET "https://api.clouding.io/v1/servers/$INPUT" -H "Accept: application/json" -H "X-API-KEY: $API_KEY" -H "Content-Type: application/json" -H "Content-Length: 0" | jq .status)
+		if [[ "$CHECKID" == "404" ]]; then
+			echo -e "$KOUNI \e[31mID not found. Check server ID and try again.\e[0m"
+			echo ""
+			exit 1
+		fi
+	    echo -e "\e[33mDisabling LAN for server ID \e[34m$INPUT\e[33m...\e[0m"
+		echo ""
+		datestart
+		curl -sX POST "https://api.clouding.io/v1/servers/$INPUT/disable-private-network" -H "Accept: application/json" -H "Content-Length: 0" -H "X-API-KEY: $API_KEY" -H "Content-Type: application/json" | jtbl -m
+    fi
+}
 
 #############
 ## BACKUPS ##
@@ -1324,6 +1385,63 @@ firewall_detach () {
 		fi
 	fi
 }
+snmp_enabled() {
+    if [ -z "$INPUT" ]; then
+	    echo -n "$ARUNI Enter server ID to enable SNMP: "
+	    read SID
+		CHECKID=$(curl -sX GET "https://api.clouding.io/v1/servers/$SID" -H "Accept: application/json" -H "X-API-KEY: $API_KEY" -H "Content-Type: application/json" -H "Content-Length: 0" | jq .status)
+		if [[ "$CHECKID" == "404" ]]; then
+			echo -e "$KOUNI \e[31mID not found. Check server ID and try again.\e[0m"
+			echo ""
+			exit 1
+		fi
+		echo ""
+		echo -e "\e[33mEnabling SNMP for server ID \e[34m$SID\e[33m...\e[0m"
+		echo ""
+		datestart
+	    curl -sX POST "https://api.clouding.io/v1/servers/$SID/allow-smtp-out" -H "Accept: application/json" -H "X-API-KEY: $API_KEY" -H "Content-Type: application/json" -d '{"slots":"'$SLOTS'","frequency":"'$FREC'"}' | jtbl -m
+	  else
+	    CHECKID=$(curl -sX GET "https://api.clouding.io/v1/servers/$INPUT" -H "Accept: application/json" -H "X-API-KEY: $API_KEY" -H "Content-Type: application/json" -H "Content-Length: 0" | jq .status)
+		if [[ "$CHECKID" == "404" ]]; then
+			echo -e "$KOUNI \e[31mID not found. Check server ID and try again.\e[0m"
+			echo ""
+			exit 1
+		fi
+		echo ""
+		echo -e "\e[33mEnabling SNMP for server ID \e[34m$INPUT\e[33m...\e[0m"
+		echo ""
+		datestart
+	    curl -sX POST "https://api.clouding.io/v1/servers/$INPUT/allow-smtp-out" -H "Accept: application/json" -H "X-API-KEY: $API_KEY" -H "Content-Type: application/json" -d '{"slots":"'$SLOTS'","frequency":"'$FREC'"}' | jtbl -m
+    fi
+}
+snmp_disabled() {
+    if [ -z "$INPUT" ]; then
+	    echo -n "$ARUNI Enter server ID to disable SNMP: "
+	    read SID
+		CHECKID=$(curl -sX GET "https://api.clouding.io/v1/servers/$SID" -H "Accept: application/json" -H "X-API-KEY: $API_KEY" -H "Content-Type: application/json" -H "Content-Length: 0" | jq .status)
+		if [[ "$CHECKID" == "404" ]]; then
+			echo -e "$KOUNI \e[31mID not found. Check server ID and try again.\e[0m"
+			echo ""
+			exit 1
+		fi
+		echo ""
+	    echo -e "\e[33mDisable SNMP for server ID \e[34m$SID\e[33m...\e[0m"
+		echo ""
+		datestart
+        curl -sX POST "https://api.clouding.io/v1/servers/$SID/block-smtp-out" -H "Accept: application/json" -H "Content-Length: 0" -H "X-API-KEY: $API_KEY" -H "Content-Type: application/json" | jtbl -m
+	else
+		CHECKID=$(curl -sX GET "https://api.clouding.io/v1/servers/$INPUT" -H "Accept: application/json" -H "X-API-KEY: $API_KEY" -H "Content-Type: application/json" -H "Content-Length: 0" | jq .status)
+		if [[ "$CHECKID" == "404" ]]; then
+			echo -e "$KOUNI \e[31mID not found. Check server ID and try again.\e[0m"
+			echo ""
+			exit 1
+		fi
+	    echo -e "\e[33mDisabling SNMP for server ID \e[34m$INPUT\e[33m...\e[0m"
+		echo ""
+		datestart
+		curl -sX POST "https://api.clouding.io/v1/servers/$INPUT/block-smtp-out" -H "Accept: application/json" -H "Content-Length: 0" -H "X-API-KEY: $API_KEY" -H "Content-Type: application/json" | jtbl -m
+    fi
+}
 
 #########
 ## SSH ##
@@ -1350,8 +1468,8 @@ list_ssh_keys() {
 
 # All command args, use --help or -h for help and usage.
 case $1 in
-	""|"-h"|"-help"|"--help") show_help ;;
-	"--conf"|"-c") add_key ;;
+    ""|"-h"|"-help"|"--help") show_help ;;
+    "--conf"|"-c") add_key ;;
     "--show-key"|"-s") datestart; show_key; finish ;;
 	"--action-history"|"-ah") datestart; history_actions; finish ;;
 	"--server-history"|"-sh") datestart; history_actions_server; finish ;;
@@ -1379,6 +1497,8 @@ case $1 in
 						"--disable-rule"|"--disabler"|"-dr") datestart; firewall_ruledisabled; finish ;;
 						"--fw-attach"|"--attach"|"-fwa") firewall_attach; finish ;;
 						"--fw-detach"|"--detach"|"-fwd") firewall_detach; finish ;;
+						"--enable-snmp"|"-esnmp") snmp_enabled; finish ;;
+						"--disable-snmp"|"-dsnmp") snmp_disabled; finish ;;
 							"--create-snapshot"|"--createsnap"|"-csnap") snapshot_create; finish ;;
 							"--delete-snapshot"|"--deletesnap"|"-dsnap") snapshot_destroy; finish ;;
 							"--enable-backups"|"-ebs") backups_enabled; finish ;;
@@ -1386,9 +1506,11 @@ case $1 in
 								"--resize-server"|"-resize"|"-r") server_resize; finish ;;
 								"--novnc-url"|"-vnc") server_novnc; finish ;;
 								"--password"|"-pass") server_password; finish ;;
+								"--enable-lan"|"-elan") lan_enabled; finish ;;
+								"--disable-lan"|"-dlan") lan_disabled; finish ;;
 								"--reset-password"|"-reset-pass"|"-rpass") server_reset_password; finish ;;
 								"--list-ssh"|"-ssh") list_ssh_keys; finish ;;
-								"--get-all_limits"|"-limits")  datestart; get_all_limits; finish;;
+								"--get-all-limits"|"-limits")  datestart; get_all_limits; finish;;
 							    *) 
 								   echo -e "$KOUNI \e[0;31mInvalid option, show help.\e[0m" 
 								   echo -e "Run: \033[0;36mclapi --help\e[0m"
